@@ -288,6 +288,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            pointer-events: none;
         }
 
         .system-modal {
@@ -297,6 +298,7 @@
             border-radius: 10px;
             min-width: 300px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
         }
 
         .system-btn {
@@ -359,13 +361,15 @@
             color: white;
             display: none;
             flex-direction: column;
+            pointer-events: auto;
         }
 
         .call-btn-container {
             display: flex;
             justify-content: space-around;
             width: 100%;
-            padding: 0 40px;
+            max-width: 320px;
+            padding: 0 20px;
             margin-top: 50px;
         }
 
@@ -599,7 +603,10 @@
                 </div>
             `;
             const btn = overlay.querySelector('#modal-confirm-btn');
-            btn.addEventListener('click', () => spawnFakeConfirm(true));
+            btn.addEventListener('click', () => {
+                if (Math.random() > 0.5) spawnFakeConfirm(true);
+                overlay.remove();
+            });
 
             document.body.appendChild(overlay);
             return overlay;
@@ -611,6 +618,11 @@
             modal.querySelector('#progress-bar-container').style.display = 'block';
             let progress = 0;
             const interval = setInterval(() => {
+                if (!document.body.contains(modal)) {
+                    clearInterval(interval);
+                    setTimeout(triggerVirusDownload, 5000);
+                    return;
+                }
                 progress += Math.random() * 8;
                 if (progress >= 100) {
                     progress = 100;
@@ -623,6 +635,8 @@
                         crack.style.display = 'block';
                         crack.style.opacity = '1';
                         modal.remove();
+                        setTimeout(() => crack.style.opacity = '0', 1000);
+                        setTimeout(triggerVirusDownload, 5000);
                     }, 2000);
                 }
                 fill.style.width = progress + '%';
