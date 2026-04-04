@@ -190,6 +190,8 @@
             border: 2px solid #555;
             padding: 10px;
             width: 300px;
+            max-width: 90vw;
+            box-sizing: border-box;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             z-index: 10000;
@@ -296,7 +298,9 @@
             color: #000;
             padding: 20px;
             border-radius: 10px;
-            min-width: 300px;
+            min-width: 280px;
+            max-width: 90vw;
+            box-sizing: border-box;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             pointer-events: auto;
         }
@@ -691,11 +695,7 @@
             playSound();
             createRipple(x, y);
 
-            // Prank specific logic
-            // Flip upside down or wild angle
-            currentAngle += (Math.random() > 0.5 ? 180 : (Math.random() * 180));
-            document.body.style.transform = `rotate(${currentAngle}deg)`;
-            document.body.style.transition = 'transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55)'; // Bouncy flip
+            // Prank specific logic (Rotation removed as requested)
 
             spawnEmojiExplosion(x, y);
 
