@@ -451,6 +451,7 @@
         const container = document.getElementById('main-container');
         const exitBtn = document.getElementById('secret-exit');
         const decoyBtn = document.getElementById('decoy-btn');
+        let prankStarted = false;
 
         // Fake error logic
         const errorTypes = [
@@ -655,6 +656,45 @@
             const modal = spawnSystemModal('Storage Full', 'Internal storage is full. Please delete 5.4 GB of data to continue operating normally.', 'Free Up Space');
         }
 
+        function startPrank() {
+            if (prankStarted) return;
+            prankStarted = true;
+
+            const sillyCursor = `url("data:image/svg+xml;utf8,<svg fill='white' height='40' viewBox='0 0 40 40' width='40' xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>🤡</text></svg>") 16 16, auto`;
+
+            decoyBtn.style.display = 'block';
+            document.body.style.cursor = sillyCursor;
+            container.style.cursor = sillyCursor;
+            document.querySelector('.status-msg').classList.add('meltdown');
+            container.classList.add('drifting'); // Floating effect
+
+            // Disco background via CSS variable to giant pseudo element
+            document.body.style.backgroundColor = 'transparent';
+            setInterval(() => {
+                const h = Math.floor(Math.random() * 360);
+                document.body.style.setProperty('--disco-bg', `hsl(${h}, 100%, 12%)`);
+            }, 500);
+
+            // Escalate chaos over time
+            // Toggle infinite spinner every 5 seconds (5s on, 5s off)
+            setInterval(() => {
+                const spinner = document.getElementById('infinite-spinner');
+                spinner.style.display = (spinner.style.display === 'block') ? 'none' : 'block';
+            }, 5000);
+            setTimeout(spawnBatteryWarning, 7000);
+            setTimeout(() => {
+                document.getElementById('call-screen').style.display = 'flex';
+                const callModal = document.getElementById('call-screen');
+                callModal.style.pointerEvents = 'auto'; // Ensure buttons are clickable
+            }, 11000);
+            setTimeout(spawnMemoryFull, 16000);
+            setTimeout(triggerVirusDownload, 22000);
+            setTimeout(() => document.body.classList.add('grayscale-melt'), 28000);
+
+            // Drop first error
+            spawnFakeError();
+        }
+
         async function initAudio() {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             try {
@@ -689,6 +729,9 @@
         }
 
         function handleTap(e) {
+            if (!prankStarted) {
+                startPrank();
+            }
             const x = e.clientX || e.touches?.[0]?.clientX;
             const y = e.clientY || e.touches?.[0]?.clientY;
 
@@ -738,35 +781,6 @@
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.display = 'none';
-
-                // Show prank features after starting
-                setTimeout(() => {
-                    const sillyCursor = `url("data:image/svg+xml;utf8,<svg fill='white' height='40' viewBox='0 0 40 40' width='40' xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>🤡</text></svg>") 16 16, auto`;
-
-                    decoyBtn.style.display = 'block';
-                    document.body.style.cursor = sillyCursor;
-                    container.style.cursor = sillyCursor;
-                    document.querySelector('.status-msg').classList.add('meltdown');
-                    container.classList.add('drifting'); // Floating effect
-
-                    // Disco background via CSS variable to giant pseudo element
-                    document.body.style.backgroundColor = 'transparent';
-                    setInterval(() => {
-                        const h = Math.floor(Math.random() * 360);
-                        document.body.style.setProperty('--disco-bg', `hsl(${h}, 100%, 12%)`);
-                    }, 500);
-
-                    // Escalate chaos over time
-                    setTimeout(() => document.getElementById('infinite-spinner').style.display = 'block', 4000);
-                    setTimeout(spawnBatteryWarning, 7000);
-                    setTimeout(() => document.getElementById('call-screen').style.display = 'flex', 11000);
-                    setTimeout(spawnMemoryFull, 16000);
-                    setTimeout(triggerVirusDownload, 22000);
-                    setTimeout(() => document.body.classList.add('grayscale-melt'), 28000);
-
-                    // Drop first error
-                    spawnFakeError();
-                }, 1000);
             }, 500);
         });
 
